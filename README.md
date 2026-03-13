@@ -1,29 +1,33 @@
 # KenesHub 3.0
 
-**Live Preview**: [keneshub30.vercel.app](https://keneshub30-git-main-ultrasoundcodes-projects.vercel.app/)
+**Live Site**: [keneshub30.vercel.app](https://keneshub30-git-main-ultrasoundcodes-projects.vercel.app/)
 
 Localized and rebranded KenesHub platform, built with [Next.js](https://nextjs.org).
 
-## Getting Started
+## 🚀 Важное примечание по развертыванию (Vercel)
 
-First, run the development server:
+В настоящее время этот проект настроен на репозиторий: `ultrasoundcode/keneshub-3.0` (с дефисом).
+Если ваш проект на Vercel смотрит на `keneshub3.0` (без дефиса), новые изменения не будут отображаться.
 
-```bash
-npm run dev
-```
+**Пожалуйста, убедитесь, что в настройках Vercel выбран правильный репозиторий: `keneshub-3.0`**.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Технологии
+
+- **Framework**: Next.js 15
+- **Styling**: Tailwind CSS
+- **Database**: SQLite (Local Dev) / Подготовлено к переходу на Postgres (Neon)
+- **Localization**: 100% русский язык
 
 ## Transformation Highlights
 
-- **100% Localization**: Fully translated to Russian.
-- **Rebranding**: Complete migration from "manus" to "KenesHub".
-- **Architecture**: Optimized mobile layout for the ecosystem visualization.
-- **Zero-Config Deployment**: Optimized for Vercel with automated build pipelines.
+- **100% Localization**: Полный перевод всех разделов интерфейса.
+- **Rebranding**: Переход от "manus" к "KenesHub" (включая CSS классы).
+- **Architecture**: Оптимизированная мобильная версия схемы экосистемы.
+- **Zero-Config Deployment**: Готово к деплою на Vercel.
 
-## Learn More
+## Getting Started
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
