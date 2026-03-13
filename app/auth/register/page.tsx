@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { User, Building2, Briefcase, Scale, Users, Check, ArrowUp } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 const roles = [
   {
@@ -44,7 +45,7 @@ const roles = [
   },
 ];
 
-export default function RegisterPage() {
+function RegisterForm() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get('role') || '';
   const [selectedRole, setSelectedRole] = useState(defaultRole);
@@ -214,5 +215,17 @@ export default function RegisterPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+       <div className="min-h-screen flex items-center justify-center bg-white">
+         <div className="animate-pulse text-zinc-300 font-serif italic text-2xl">Загрузка...</div>
+       </div>
+    }>
+      <RegisterForm />
+    </Suspense>
   );
 }
