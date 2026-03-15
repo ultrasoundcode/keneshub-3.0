@@ -43,7 +43,7 @@ export default function LandingPage() {
     }
   };
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden w-full">
       {/* Hero Content */}
       <section className="pt-[220px] pb-20 px-6">
         <div className="max-w-[1000px] mx-auto text-center">
@@ -53,7 +53,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="font-serif text-[56px] md:text-[72px] text-[#222] mb-12 tracking-tight leading-[1.05]"
+            className="font-serif text-[42px] sm:text-[56px] md:text-[72px] text-[#222] mb-12 tracking-tight leading-[1.05]"
           >
             Чем я могу помочь вам сегодня?
           </motion.h1>
@@ -162,18 +162,19 @@ export default function LandingPage() {
       <ArchitectureSection />
 
       {/* Signature Black Section (Manus bottom branding) */}
-      <section className="bg-[#111] py-[120px] px-12 md:px-24">
-        <div className="max-w-[1400px] mx-auto">
+      <section className="bg-[#111] py-[80px] md:py-[120px] px-6 sm:px-12 md:px-24 w-full">
+        <div className="max-w-[1400px] mx-auto w-full">
           <motion.div
              initial={{ opacity: 0, x: -20 }}
              whileInView={{ opacity: 1, x: 0 }}
              transition={{ duration: 0.8 }}
              viewport={{ once: true }}
+             className="break-words"
           >
-            <h2 className="font-serif italic text-[56px] md:text-[76px] text-zinc-100 leading-[0.95] tracking-tight mb-2">
+            <h2 className="font-serif italic text-[40px] sm:text-[56px] md:text-[76px] text-zinc-100 leading-[0.95] tracking-tight mb-2">
               Меньше бюрократии,
             </h2>
-            <h2 className="font-serif italic text-[56px] md:text-[76px] text-zinc-100 leading-[0.95] tracking-tight">
+            <h2 className="font-serif italic text-[40px] sm:text-[56px] md:text-[76px] text-zinc-100 leading-[0.95] tracking-tight">
               больше решений.
             </h2>
           </motion.div>
