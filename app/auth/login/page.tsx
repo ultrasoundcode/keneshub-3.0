@@ -18,6 +18,13 @@ export default function LoginPage() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userEmail', email);
+        if (!localStorage.getItem('userName')) {
+           localStorage.setItem('userName', 'Пользователь');
+           localStorage.setItem('userRole', 'Заёмщик');
+        }
+      }
       router.push('/dashboard');
     }, 1200);
   };

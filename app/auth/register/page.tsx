@@ -61,6 +61,11 @@ function RegisterForm() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userName', form.name || 'Пользователь');
+        localStorage.setItem('userRole', selected?.label || 'Заёмщик');
+        localStorage.setItem('userEmail', form.email || '');
+      }
       router.push(selected?.href || '/dashboard');
     }, 1200);
   };

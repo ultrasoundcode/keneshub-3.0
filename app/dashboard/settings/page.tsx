@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import { User, Bell, Shield, Globe, Save, Check, ChevronRight } from 'lucide-react';
@@ -14,8 +14,30 @@ const tabs = [
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [saved, setSaved] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  const [form, setForm] = useState({
+    name: 'Алибек Нурланов',
+    email: 'alibek@example.kz',
+    about: 'Ориентирован на урегулирование задолженности и восстановление финансового здоровья.'
+  });
+
+  useEffect(() => {
+    setMounted(true);
+    setForm(prev => ({
+      ...prev,
+      name: localStorage.getItem('userName') || 'Алибек Нурланов',
+      email: localStorage.getItem('userEmail') || 'alibek@example.kz'
+    }));
+  }, []);
 
   const handleSave = () => {
+    localStorage.setItem('userName', form.name);
+    localStorage.setItem('userEmail', form.email);
+    // Tell the custom logic event to trigger if needed, or just let it be. 
+    // Usually localStorage listeners are needed for cross-tab, but a reload works for same tab.
+    window.dispatchEvent(new Event('storage'));
+    
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -53,20 +75,20 @@ export default function SettingsPage() {
 
           <section className="space-y-16">
              {activeTab === 'profile' && (
-                <div className="space-y-10">
+                 <div className="space-y-10">
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                       <div className="space-y-3">
                          <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">ФИО</label>
-                         <input type="text" defaultValue="Алибек Нурланов" className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium" />
+                         <input type="text" value={mounted ? form.name : ''} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium" />
                       </div>
                       <div className="space-y-3">
                          <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">Электронная почта</label>
-                         <input type="email" defaultValue="alibek@example.kz" className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium" />
+                         <input type="email" value={mounted ? form.email : ''} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium" />
                       </div>
                    </div>
                    <div className="space-y-3">
                       <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">О себе</label>
-                      <textarea className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium min-h-[100px] resize-none" defaultValue="Ориентирован на урегулирование задолженности и восстановление финансового здоровья." />
+                      <textarea className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium min-h-[100px] resize-none" value={mounted ? form.about : ''} onChange={(e) => setForm({...form, about: e.target.value})} />
                    </div>
                 </div>
              )}

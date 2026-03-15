@@ -10,12 +10,14 @@ export default function LandingPage() {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleAnalyze = async () => {
     if (!query.trim()) return;
     
     setIsLoading(true);
     setResponse('');
+    setIsError(false);
     
     try {
       const res = await fetch('/api/analyze-situation', {
@@ -28,11 +30,14 @@ export default function LandingPage() {
       
       if (res.ok) {
         setResponse(data.advice);
+        setIsError(false);
       } else {
         setResponse('Произошла ошибка при анализе. Пожалуйста, попробуйте еще раз позже.');
+        setIsError(true);
       }
     } catch (error) {
       setResponse('Не удалось подключиться к сервису анализа.');
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -108,14 +113,16 @@ export default function LandingPage() {
                       </div>
                     </div>
                     
-                    <div className="flex justify-end pt-4 border-t border-zinc-100/50">
-                      <Link 
-                        href="/auth/register"
-                        className="btn-keneshub btn-black py-3 px-8 rounded-xl text-[13px] uppercase tracking-[0.2em] font-bold flex items-center gap-2 hover:scale-105 transition-transform"
-                      >
-                        Регистрация <ArrowUp className="rotate-90" size={16} />
-                      </Link>
-                    </div>
+                    {!isError && (
+                      <div className="flex justify-end pt-4 border-t border-zinc-100/50">
+                        <Link 
+                          href="/auth/register"
+                          className="btn-keneshub btn-black py-3 px-8 rounded-xl text-[13px] uppercase tracking-[0.2em] font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+                        >
+                          Регистрация <ArrowUp className="rotate-90" size={16} />
+                        </Link>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

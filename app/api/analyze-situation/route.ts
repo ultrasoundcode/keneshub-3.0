@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: `Ты — эксперт платформы KenesHub (Платформа урегулирования долгов в Казахстане).
 Твоя задача — проанализировать ситуацию пользователя с долгами и дать ОЧЕНЬ КОРОТКИЙ (не более 3-4 предложений), четкий и эмпатичный совет.
 

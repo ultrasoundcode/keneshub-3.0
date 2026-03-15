@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   MessageSquare, 
@@ -24,6 +25,19 @@ const menuItems = [
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+    setMounted(true);
+    setUserName(localStorage.getItem('userName') || '');
+    setUserRole(localStorage.getItem('userRole') || '');
+  }, []);
+
+  const displayInitial = mounted && userName ? userName[0].toUpperCase() : 'А';
+  const displayUserName = mounted && userName ? userName : 'Алибек Н.';
+  const displayUserRole = mounted && userRole ? userRole : 'Заёмщик';
 
   return (
     <aside className="w-[260px] h-screen bg-white border-r border-[#e8e8e8] flex flex-col flex-shrink-0">
@@ -74,11 +88,11 @@ export default function DashboardSidebar() {
       <div className="p-6 border-t border-[#e8e8e8]">
         <div className="flex items-center gap-3 mb-6 px-2">
           <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center font-serif text-[16px] font-bold text-black border border-zinc-200">
-            А
+            {displayInitial}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-black truncate">Алибек Н.</p>
-            <p className="text-[12px] text-zinc-400 truncate">Заёмщик</p>
+            <p className="text-[13px] font-bold text-black truncate">{displayUserName}</p>
+            <p className="text-[12px] text-zinc-400 truncate">{displayUserRole}</p>
           </div>
         </div>
         <button className="w-full flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-black transition-colors">
