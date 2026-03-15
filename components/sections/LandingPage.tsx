@@ -63,23 +63,23 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="max-w-[700px] mx-auto mb-10 relative z-20"
+            className="max-w-[700px] w-full mx-auto mb-10 relative z-20"
           >
-            <div className="keneshub-pill p-2 pl-6 flex items-center gap-4">
-                <Search size={22} className="text-zinc-300 min-w-[22px]" />
+            <div className="keneshub-pill p-1.5 sm:p-2 pl-4 sm:pl-6 flex items-center gap-2 sm:gap-4 overflow-hidden">
+                <Search size={22} className="text-zinc-300 shrink-0 hidden sm:block" />
                 <input 
                   type="text" 
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
-                  placeholder="Опишите вашу ситуацию с задолженностью..."
-                  className="flex-1 bg-transparent border-none outline-none text-[18px] text-black placeholder:text-zinc-300 py-3"
+                  placeholder="Опишите вашу ситуацию..."
+                  className="flex-1 w-full min-w-0 bg-transparent border-none outline-none text-[15px] sm:text-[18px] text-black placeholder:text-zinc-300 py-3"
                   disabled={isLoading}
                 />
                 <button 
                   onClick={handleAnalyze}
                   disabled={isLoading || !query.trim()}
-                  className="btn-keneshub btn-black rounded-xl px-8 py-4 disabled:opacity-50 whitespace-nowrap min-w-[170px]"
+                  className="btn-keneshub btn-black rounded-[14px] px-5 sm:px-8 py-3.5 sm:py-4 justify-center disabled:opacity-50 whitespace-nowrap shrink-0 sm:min-w-[170px]"
                 >
                   {isLoading ? (
                     <span className="flex items-center gap-2 justify-center">
@@ -87,9 +87,14 @@ export default function LandingPage() {
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3"/>
                         <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
                       </svg>
-                      Анализ...
+                      <span className="hidden sm:inline">Анализ...</span>
                     </span>
-                  ) : 'Анализировать'}
+                  ) : (
+                    <>
+                      <span className="sm:hidden text-[13px] tracking-wide">Анализ</span>
+                      <span className="hidden sm:inline">Анализировать</span>
+                    </>
+                  )}
                 </button>
               </div>
 
