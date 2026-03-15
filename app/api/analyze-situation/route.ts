@@ -49,11 +49,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Error analyzing situation:', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to analyze situation. Please try again later.',
-        details: error instanceof Error ? error.message : String(error),
-        hasKey: !!process.env.OPENAI_API_KEY
-      },
+      { error: 'Failed to analyze situation. Please try again later.' },
       { status: 500 }
     );
   }
