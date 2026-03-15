@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(req: Request) {
   try {
@@ -13,12 +11,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Situation is required' }, { status: 400 });
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `Ты — эксперт платформы KenesHub (Платформа урегулирования долгов в Казахстане).
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: `Ты — эксперт платформы KenesHub (Платформа урегулирования долгов в Казахстане).
 Твоя задача — проанализировать ситуацию пользователя с долгами и дать ОЧЕНЬ КОРОТКИЙ (не более 3-4 предложений), четкий и эмпатичный совет.
 
 Платформа связывает 5 ролей:
@@ -33,17 +28,11 @@ export async function POST(req: Request) {
 2 абзац: Призыв к действию. Обязательно напиши: "Зарегистрируйтесь на KenesHub, чтобы начать решение вашей проблемы прямо сейчас."
 
 Отвечай профессионально, но понятно. Не используй сложную терминологию без необходимости.`
-        },
-        {
-          role: 'user',
-          content: situation
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 300,
     });
 
-    const advice = response.choices[0].message.content;
+    const result = await model.generateContent(situation);
+    const response = await result.response;
+    const advice = response.text();
 
     return NextResponse.json({ advice });
   } catch (error) {
