@@ -23,10 +23,6 @@ export default function Footer() {
       links: ['События', 'Партнеры']
     },
     {
-      title: 'Сравнение',
-      links: ['VS ChatGPT', 'VS Lovable']
-    },
-    {
       title: 'Бизнес',
       links: ['Командный план', 'SSO', 'API']
     },
