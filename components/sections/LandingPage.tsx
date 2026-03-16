@@ -162,10 +162,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Transitional Gap */}
-      <div className="h-[200px] w-full" />
-
-      <HowItWorks />
 
       <ArchitectureSection />
 
