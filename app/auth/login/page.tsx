@@ -5,8 +5,10 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowUp, Plus, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n';
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -55,10 +57,10 @@ export default function LoginPage() {
 
         <div className="text-center mb-10">
           <h1 className="font-serif text-[32px] md:text-[40px] text-black leading-tight tracking-tight">
-            С возвращением
+            {t('С возвращением')}
           </h1>
           <p className="text-[14px] text-zinc-400 font-medium mt-2">
-            Введите свои данные для доступа к платформе
+            {t('Введите свои данные для доступа к платформе')}
           </p>
         </div>
 
@@ -66,7 +68,7 @@ export default function LoginPage() {
           {/* Email */}
           <div className="space-y-2">
             <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 ml-1">
-              Электронная почта
+              {t('Электронная почта')}
             </label>
             <div className="keneshub-input-pill p-[14px]">
               <input
@@ -84,10 +86,10 @@ export default function LoginPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center ml-1">
               <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">
-                Пароль
+                {t('Пароль')}
               </label>
               <Link href="#" className="text-[11px] font-bold text-zinc-300 hover:text-black transition-colors uppercase tracking-widest">
-                Забыли?
+                {t('Забыли?')}
               </Link>
             </div>
             <div className="keneshub-input-pill p-[14px] flex items-center">
@@ -120,26 +122,26 @@ export default function LoginPage() {
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3"/>
                   <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
                 </svg>
-                Вход...
+                {t('Вход...')}
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Войти <ArrowUp className="rotate-90" size={16} />
+                {t('Войти')} <ArrowUp className="rotate-90" size={16} />
               </span>
             )}
           </button>
         </form>
 
         <p className="text-center text-[13px] mt-10 text-zinc-400 font-medium">
-          Нет аккаунта?{' '}
+          {t('Нет аккаунта?')} {' '}
           <Link href="/auth/register" className="text-black font-bold border-b border-black pb-0.5">
-            Создать
+            {t('Создать')}
           </Link>
         </p>
 
         <div className="mt-20 pt-10 border-t border-zinc-100 text-center">
           <Link href="/" className="text-[11px] font-bold text-zinc-300 hover:text-black uppercase tracking-[0.2em] transition-colors">
-            ← Вернуться на главную
+            {t('← Вернуться на главную')}
           </Link>
         </div>
       </motion.div>

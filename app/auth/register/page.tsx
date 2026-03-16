@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { User, Building2, Briefcase, Scale, Users, Check, ArrowUp } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { useLanguage } from '@/lib/i18n';
 
 const roles = [
   {
@@ -46,6 +47,7 @@ const roles = [
 ];
 
 function RegisterForm() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get('role') || '';
   const [selectedRole, setSelectedRole] = useState(defaultRole);
@@ -96,10 +98,10 @@ function RegisterForm() {
 
         <div className="text-center mb-12">
           <h1 className="font-serif text-[40px] text-black leading-tight tracking-tight">
-            Создать аккаунт
+            {t('Создать аккаунт')}
           </h1>
           <p className="text-[14px] text-zinc-400 font-medium mt-2">
-            Выберите вашу роль в экосистеме
+            {t('Выберите вашу роль в экосистеме')}
           </p>
         </div>
 
@@ -124,8 +126,8 @@ function RegisterForm() {
                     <Icon size={18} strokeWidth={isSelected ? 2 : 1.5} />
                   </div>
                   <div className="text-left">
-                    <p className={`text-[15px] font-bold ${isSelected ? 'text-black' : 'text-zinc-500'}`}>{role.label}</p>
-                    <p className="text-[12px] text-zinc-400">{role.desc}</p>
+                    <p className={`text-[15px] font-bold ${isSelected ? 'text-black' : 'text-zinc-500'}`}>{t(role.label)}</p>
+                    <p className="text-[12px] text-zinc-400">{t(role.desc)}</p>
                   </div>
                 </div>
                 {isSelected && <Check size={18} className="text-black" />}
@@ -138,7 +140,7 @@ function RegisterForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 ml-1">
-                ФИО
+                {t('ФИО')}
               </label>
               <div className="keneshub-input-pill p-[14px]">
                 <input
@@ -153,7 +155,7 @@ function RegisterForm() {
             </div>
             <div className="space-y-2">
               <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 ml-1">
-                Email
+                {t('Email')}
               </label>
               <div className="keneshub-input-pill p-[14px]">
                 <input
@@ -170,7 +172,7 @@ function RegisterForm() {
 
           <div className="space-y-2">
             <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 ml-1">
-              Пароль
+              {t('Пароль')}
             </label>
             <div className="keneshub-input-pill p-[14px]">
               <input
@@ -196,26 +198,26 @@ function RegisterForm() {
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3"/>
                   <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
                 </svg>
-                Создание...
+                {t('Создание...')}
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Инициализировать аккаунт <ArrowUp className="rotate-90" size={16} />
+                {t('Инициализировать аккаунт')} <ArrowUp className="rotate-90" size={16} />
               </span>
             )}
           </button>
         </form>
 
         <p className="text-center text-[13px] mt-10 text-zinc-400 font-medium">
-          Уже есть аккаунт?{' '}
+          {t('Уже есть аккаунт?')} {' '}
           <Link href="/auth/login" className="text-black font-bold border-b border-black pb-0.5">
-            Войти
+            {t('Войти')}
           </Link>
         </p>
 
         <div className="mt-20 pt-10 border-t border-zinc-100 text-center">
           <Link href="/" className="text-[11px] font-bold text-zinc-300 hover:text-black uppercase tracking-[0.2em] transition-colors">
-            ← Вернуться на главную
+            {t('← Вернуться на главную')}
           </Link>
         </div>
       </motion.div>

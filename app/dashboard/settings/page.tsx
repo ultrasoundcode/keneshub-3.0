@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
-import { User, Bell, Shield, Globe, Save, Check, ChevronRight } from 'lucide-react';
+import { User, Bell, Shield, Globe, Save, Check, ChevronRight, Settings as SettingsIcon } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 const tabs = [
   { id: 'profile', label: 'Профиль', icon: User },
@@ -12,6 +13,7 @@ const tabs = [
 ];
 
 export default function SettingsPage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
   const [saved, setSaved] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -50,10 +52,10 @@ export default function SettingsPage() {
           
           <header className="mb-16">
              <div className="flex items-center gap-3 mb-4">
-                <Settings className="w-5 h-5 text-zinc-400" />
-                <span className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">Персональная система</span>
+                <SettingsIcon className="w-5 h-5 text-zinc-400" />
+                <span className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">{t('Персональная система')}</span>
              </div>
-             <h1 className="font-serif text-[56px] text-black tracking-tight leading-none">Настройки</h1>
+             <h1 className="font-serif text-[56px] text-black tracking-tight leading-none">{t('Настройки')}</h1>
           </header>
 
           <div className="flex gap-12 border-b border-zinc-100 mb-16">
@@ -65,7 +67,7 @@ export default function SettingsPage() {
                     activeTab === tab.id ? 'text-black' : 'text-zinc-400 hover:text-black'
                   }`}
                 >
-                  {tab.label}
+                  {t(tab.label)}
                   {activeTab === tab.id && (
                     <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
                   )}
@@ -78,16 +80,16 @@ export default function SettingsPage() {
                  <div className="space-y-10">
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                       <div className="space-y-3">
-                         <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">ФИО</label>
+                         <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">{t('ФИО')}</label>
                          <input type="text" value={mounted ? form.name : ''} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium" />
                       </div>
                       <div className="space-y-3">
-                         <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">Электронная почта</label>
+                         <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">{t('Электронная почта')}</label>
                          <input type="email" value={mounted ? form.email : ''} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium" />
                       </div>
                    </div>
                    <div className="space-y-3">
-                      <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">О себе</label>
+                      <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">{t('О себе')}</label>
                       <textarea className="w-full bg-transparent border-b border-zinc-200 py-3 outline-none focus:border-black transition-all text-[16px] font-medium min-h-[100px] resize-none" value={mounted ? form.about : ''} onChange={(e) => setForm({...form, about: e.target.value})} />
                    </div>
                 </div>
@@ -103,9 +105,9 @@ export default function SettingsPage() {
                       <div key={i} className="flex items-center justify-between group">
                          <div>
                             <p className="text-[15px] font-bold text-black group-hover:italic transition-all">
-                               {item.label}
+                               {t(item.label)}
                             </p>
-                            <p className="text-[13px] text-zinc-400 mt-1">{item.desc}</p>
+                            <p className="text-[13px] text-zinc-400 mt-1">{t(item.desc)}</p>
                          </div>
                          <div className="w-10 h-6 bg-zinc-100 rounded-full p-1 cursor-pointer transition-colors hover:bg-zinc-200 relative">
                             <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
@@ -118,14 +120,14 @@ export default function SettingsPage() {
              <div className="pt-12 flex items-center justify-between border-t border-zinc-100">
                 <button onClick={handleSave} className="btn-keneshub btn-black px-12 py-3.5 rounded-xl uppercase tracking-[0.2em] flex items-center gap-3">
                    {saved ? <Check size={16} /> : <Save size={16} />}
-                   {saved ? 'Сохранено' : 'Сохранить изменения'}
+                   {saved ? t('Сохранено') : t('Сохранить изменения')}
                 </button>
-                <p className="text-[13px] text-zinc-400 font-medium italic">Синхронизация: 2 минуты назад</p>
+                <p className="text-[13px] text-zinc-400 font-medium italic">{t('Синхронизация: 2 минуты назад')}</p>
              </div>
           </section>
 
           <div className="mt-40 text-center opacity-20">
-             <h2 className="font-serif italic text-[24px] text-black">Точность — это залог спокойствия.</h2>
+             <h2 className="font-serif italic text-[24px] text-black">{t('Точность — это залог спокойствия.')}</h2>
           </div>
 
         </div>

@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Sparkles
 } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 const menuItems = [
   { id: 'dashboard', label: 'Центр управления', icon: LayoutDashboard, href: '/dashboard' },
@@ -24,6 +25,7 @@ const menuItems = [
 ];
 
 export default function DashboardSidebar() {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [userName, setUserName] = useState('');
@@ -75,7 +77,7 @@ export default function DashboardSidebar() {
               <div className="flex items-center gap-3">
                 <Icon size={18} className={isActive ? 'text-black' : 'text-zinc-400 group-hover:text-black'} strokeWidth={1.8} />
                 <span className="text-[14px] font-medium tracking-tight">
-                  {item.label}
+                  {t(item.label)}
                 </span>
               </div>
               {isActive && <ChevronRight size={14} className="text-zinc-400" />}
@@ -97,7 +99,7 @@ export default function DashboardSidebar() {
         </div>
         <button className="w-full flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-black transition-colors">
           <LogOut size={16} />
-          <span className="text-[13px] font-semibold uppercase tracking-wider">Выйти</span>
+          <span className="text-[13px] font-semibold uppercase tracking-wider">{t('Выйти')}</span>
         </button>
       </div>
     </aside>
