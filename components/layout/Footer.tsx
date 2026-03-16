@@ -20,7 +20,7 @@ export default function Footer() {
     },
     {
       title: 'Сообщество',
-      links: ['События', 'Партнеры']
+      links: ['События', 'Партнеры', 'Github (ultrasoundcode)']
     },
     {
       title: 'Бизнес',
@@ -44,7 +44,11 @@ export default function Footer() {
               <ul className="space-y-3.5">
                 {section.links.map((link) => (
                   <li key={link}>
-                    <Link href="#" className="text-[13.5px] text-[#777] hover:text-white transition-colors">
+                    <Link 
+                      href={link === 'Github (ultrasoundcode)' ? 'https://github.com/ultrasoundcode' : '#'} 
+                      target={link === 'Github (ultrasoundcode)' ? '_blank' : undefined}
+                      className="text-[13.5px] text-[#777] hover:text-white transition-colors"
+                    >
                       {t(link)}
                     </Link>
                   </li>
