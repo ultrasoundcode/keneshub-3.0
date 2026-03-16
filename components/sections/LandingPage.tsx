@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ArrowUp, Layout, Globe, Code, PenTool, MoreHorizontal, Search, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import ArchitectureSection from './ArchitectureSection';
-import HowItWorks from './HowItWorks';
 import { useState } from 'react';
 import { useLanguage } from '@/lib/i18n';
 
