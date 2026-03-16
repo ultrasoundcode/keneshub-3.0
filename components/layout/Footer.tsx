@@ -11,24 +11,12 @@ export default function Footer() {
 
   const sections = [
     {
-      title: 'Продукт',
-      links: ['Тарифы', 'Веб-приложение', 'AI Дизайн', 'AI Документы', 'Оператор браузера', 'Исследования', 'Почта KenesHub', 'Интеграция Slack']
-    },
-    {
-      title: 'Ресурсы',
-      links: ['Блог', 'Документация', 'Обновления', 'Центр помощи', 'Центр доверия', 'API', 'Командный план', 'Стартапам', 'Руководство', 'Бренд-активы']
+      title: 'Компания',
+      links: ['О нас', 'Контакты', 'Безопасность', 'Условия использования', 'Политика конфиденциальности']
     },
     {
       title: 'Сообщество',
-      links: ['События', 'Партнеры', 'Github (ultrasoundcode)']
-    },
-    {
-      title: 'Бизнес',
-      links: ['Командный план', 'SSO', 'API']
-    },
-    {
-      title: 'Компания',
-      links: ['О нас', 'Вакансии', 'Для бизнеса', 'Для СМИ', 'Условия использования', 'Политика конфиденциальности', 'Куки']
+      links: ['Github (ultrasoundcode)']
     },
   ];
 
@@ -37,7 +25,7 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto">
         
         {/* Link Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-12 gap-x-8 mb-32">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-8 mb-32">
           {sections.map((section) => (
             <div key={section.title}>
               <h3 className="text-[14.5px] font-bold text-white mb-6 tracking-tight">{t(section.title)}</h3>

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ArrowUp, Layout, Globe, Code, PenTool, MoreHorizontal, Search, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import ArchitectureSection from './ArchitectureSection';
+import HowItWorks from './HowItWorks';
 import { useState } from 'react';
 import { useLanguage } from '@/lib/i18n';
 
@@ -165,7 +166,8 @@ export default function LandingPage() {
       {/* Transitional Gap */}
       <div className="h-[200px] w-full" />
 
-      {/* Architecture Visualization (New Section from Diagram) */}
+      <HowItWorks />
+
       <ArchitectureSection />
 
       {/* Signature Black Section (Manus bottom branding) */}
