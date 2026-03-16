@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { User, Building2, Briefcase, Scale, Users, FileCheck, MessageSquare, ShieldCheck } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 const actors = [
   { id: 'creditor', name: 'Кредитор', desc: 'Банк / МФО', icon: Building2, side: 'left', items: ['Запрос на КП', 'Чат', 'ЭЦП'] },
@@ -11,6 +12,7 @@ const actors = [
 ];
 
 export default function ArchitectureSection() {
+  const { t } = useLanguage();
   return (
     <section className="py-20 md:py-40 bg-white overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-4 md:px-6">
@@ -18,13 +20,13 @@ export default function ArchitectureSection() {
         <header className="text-center mb-16 md:mb-32">
           <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
              <ShieldCheck size={18} className="text-zinc-400" />
-             <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-zinc-400">Архитектура системы</span>
+             <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-zinc-400">{t('Архитектура системы')}</span>
           </div>
           <h2 className="font-serif text-[32px] md:text-[56px] text-black leading-tight md:leading-none tracking-tight">
-            Экосистема урегулирования
+            {t('Экосистема урегулирования')}
           </h2>
           <p className="text-[14px] md:text-[16px] text-zinc-400 mt-4 md:mt-6 max-w-[600px] mx-auto font-medium px-4">
-            Прозрачное взаимодействие между всеми участниками процесса реструктуризации долга в Казахстане.
+            {t('Прозрачное взаимодействие между всеми участниками процесса реструктуризации долга в Казахстане.')}
           </p>
         </header>
 
@@ -39,8 +41,8 @@ export default function ArchitectureSection() {
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-2 md:mb-3">
                  <User size={20} className="md:size-[24px] text-black" />
               </div>
-              <h3 className="font-serif text-[18px] md:text-[22px] font-bold text-black leading-tight italic">Заёмщик</h3>
-              <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-zinc-400 mt-1">Центральный узел</p>
+              <h3 className="font-serif text-[18px] md:text-[22px] font-bold text-black leading-tight italic">{t('Заёмщик')}</h3>
+              <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-zinc-400 mt-1">{t('Центральный узел')}</p>
             </motion.div>
             
             {/* Pulsing Aura */}
@@ -78,8 +80,8 @@ export default function ArchitectureSection() {
                       <actor.icon size={22} strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h4 className="text-[15px] md:text-[17px] font-bold text-black tracking-tight leading-none mb-1">{actor.name}</h4>
-                      <p className="text-[10px] md:text-[12px] text-zinc-400 font-medium uppercase tracking-widest leading-none">{actor.desc}</p>
+                      <h4 className="text-[15px] md:text-[17px] font-bold text-black tracking-tight leading-none mb-1">{t(actor.name)}</h4>
+                      <p className="text-[10px] md:text-[12px] text-zinc-400 font-medium uppercase tracking-widest leading-none">{t(actor.desc)}</p>
                     </div>
                   </div>
                   
@@ -87,7 +89,7 @@ export default function ArchitectureSection() {
                      {actor.items.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-2 md:gap-3 text-[12px] md:text-[13px] font-medium text-zinc-500">
                            <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-zinc-200" />
-                           {item}
+                           {t(item)}
                         </div>
                      ))}
                   </div>
@@ -109,7 +111,7 @@ export default function ArchitectureSection() {
                       <cap.icon size={18} strokeWidth={1.5} />
                    </div>
                    <span className="text-[11px] md:text-[13px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] text-zinc-400 group-hover:text-black transition-colors">
-                      {cap.text}
+                      {t(cap.text)}
                    </span>
                 </div>
               ))}
@@ -117,16 +119,16 @@ export default function ArchitectureSection() {
            
            <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
               <div>
-                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-300 mb-2">Децентрализация</p>
-                 <p className="text-[14px] text-zinc-500 font-serif italic">Без хранения портфелей</p>
+                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-300 mb-2">{t('Децентрализация')}</p>
+                 <p className="text-[14px] text-zinc-500 font-serif italic">{t('Без хранения портфелей')}</p>
               </div>
               <div>
-                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-300 mb-2">Нейтральность</p>
-                 <p className="text-[14px] text-zinc-500 font-serif italic">Без участия в расчётах</p>
+                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-300 mb-2">{t('Нейтральность')}</p>
+                 <p className="text-[14px] text-zinc-500 font-serif italic">{t('Без участия в расчётах')}</p>
               </div>
               <div>
-                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-300 mb-2">Авторитет сервиса</p>
-                 <p className="text-[14px] text-zinc-500 font-serif italic">Технический оператор</p>
+                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-300 mb-2">{t('Авторитет сервиса')}</p>
+                 <p className="text-[14px] text-zinc-500 font-serif italic">{t('Технический оператор')}</p>
               </div>
            </div>
         </div>

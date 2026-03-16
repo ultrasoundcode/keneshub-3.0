@@ -5,8 +5,10 @@ import { Plus, ArrowUp, Layout, Globe, Code, PenTool, MoreHorizontal, Search, Sp
 import Link from 'next/link';
 import ArchitectureSection from './ArchitectureSection';
 import { useState } from 'react';
+import { useLanguage } from '@/lib/i18n';
 
 export default function LandingPage() {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
@@ -55,7 +57,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="font-serif text-[42px] sm:text-[56px] md:text-[72px] text-[#222] mb-12 tracking-tight leading-[1.05]"
           >
-            Чем я могу помочь вам сегодня?
+            {t('Чем я могу помочь вам сегодня?')}
           </motion.h1>
 
           {/* Search Box / Input Container */}
@@ -72,7 +74,7 @@ export default function LandingPage() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
-                  placeholder="Опишите вашу ситуацию..."
+                  placeholder={t('Опишите вашу ситуацию...')}
                   className="flex-1 w-full min-w-0 bg-transparent border-none outline-none text-[15px] sm:text-[18px] text-black placeholder:text-zinc-300 py-3"
                   disabled={isLoading}
                 />
@@ -87,12 +89,12 @@ export default function LandingPage() {
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3"/>
                         <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
                       </svg>
-                      <span className="hidden sm:inline">Анализ...</span>
+                      <span className="hidden sm:inline">{t('Анализ...')}</span>
                     </span>
                   ) : (
                     <>
-                      <span className="sm:hidden text-[13px] tracking-wide">Анализ</span>
-                      <span className="hidden sm:inline">Анализировать</span>
+                      <span className="sm:hidden text-[13px] tracking-wide">{t('Анализ')}</span>
+                      <span className="hidden sm:inline">{t('Анализировать')}</span>
                     </>
                   )}
                 </button>
@@ -124,7 +126,7 @@ export default function LandingPage() {
                           href="/auth/register"
                           className="btn-keneshub btn-black py-3 px-8 rounded-xl text-[13px] uppercase tracking-[0.2em] font-bold flex items-center gap-2 hover:scale-105 transition-transform"
                         >
-                          Регистрация <ArrowUp className="rotate-90" size={16} />
+                          {t('Регистрация')} <ArrowUp className="rotate-90" size={16} />
                         </Link>
                       </div>
                     )}
@@ -141,11 +143,11 @@ export default function LandingPage() {
             className="flex flex-wrap items-center justify-center gap-2.5"
           >
             {[
-              { icon: Layout, label: 'Реструктуризация' },
-              { icon: Globe, label: 'Консультация' },
-              { icon: Code, label: 'Медиация' },
-              { icon: PenTool, label: 'Жалоба' },
-              { icon: MoreHorizontal, label: 'Ещё' }
+              { icon: Layout, label: t('Реструктуризация') },
+              { icon: Globe, label: t('Консультация') },
+              { icon: Code, label: t('Медиация') },
+              { icon: PenTool, label: t('Жалоба') },
+              { icon: MoreHorizontal, label: t('Ещё') }
             ].map((item) => (
               <button 
                 key={item.label}
@@ -177,10 +179,10 @@ export default function LandingPage() {
              className="break-words"
           >
             <h2 className="font-serif italic text-[40px] sm:text-[56px] md:text-[76px] text-zinc-100 leading-[0.95] tracking-tight mb-2">
-              Меньше бюрократии,
+              {t('Меньше бюрократии,')}
             </h2>
             <h2 className="font-serif italic text-[40px] sm:text-[56px] md:text-[76px] text-zinc-100 leading-[0.95] tracking-tight">
-              больше решений.
+              {t('больше решений.')}
             </h2>
           </motion.div>
         </div>

@@ -1,14 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n';
 
 export default function Navbar() {
+  const { t } = useLanguage();
   return (
     <div className="absolute top-0 left-0 right-0 z-50">
       {/* Top Banner (exactly matches manus.im meta-announcement) */}
       <div className="w-full bg-[#f8f8f6] py-1.5 px-4 text-center border-b border-[#e8e8e8]">
-        <Link href="#" className="text-[12.5px] font-medium text-[#111] hover:opacity-75 transition-opacity flex items-center justify-center gap-1">
-          KenesHub теперь доступен во всех регионах Казахстана — прозрачное урегулирование для всех
+        <Link href="#" className="text-[12.5px] font-medium text-[#111] hover:opacity-75 transition-opacity flex flex-wrap items-center justify-center gap-1">
+          {t('KenesHub теперь доступен во всех регионах Казахстана — прозрачное урегулирование для всех')}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </Link>
       </div>
@@ -28,7 +30,7 @@ export default function Navbar() {
                   href="#" 
                   className="text-[14px] font-bold text-[#666] hover:text-black transition-colors uppercase tracking-[0.15em] border-b-2 border-transparent hover:border-black/5 pb-1"
                 >
-                  {item}
+                  {t(item)}
                 </Link>
               ))}
             </nav>
@@ -40,13 +42,13 @@ export default function Navbar() {
               href="/auth/login" 
               className="bg-black text-white px-[14px] py-[6px] rounded-[7px] text-[13.5px] font-semibold hover:opacity-85 transition-opacity"
             >
-              Войти
+              {t('Войти')}
             </Link>
             <Link 
               href="/auth/register" 
               className="bg-white text-black border border-[#e2e2e2] px-[14px] py-[6px] rounded-[7px] text-[13.5px] font-semibold hover:bg-[#f9f9f9] transition-all"
             >
-              Регистрация
+              {t('Регистрация')}
             </Link>
           </div>
 
