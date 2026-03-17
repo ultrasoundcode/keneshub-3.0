@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ArrowUp, Layout, Globe, Code, PenTool, MoreHorizontal, Search, Sparkles } from 'lucide-react';
+import { ArrowUp, Layout, Globe, Code, PenTool, MoreHorizontal, Search, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import ArchitectureSection from './ArchitectureSection';
 import { useState, useEffect } from 'react';
@@ -16,7 +16,6 @@ const TypingContributionGrid = ({ query }: { query: string }) => {
   const blocks = Array.from({ length: 100 });
   const words = query.split(/\s+/).filter(w => w.length > 0);
   const currentWord = query.endsWith(' ') ? '' : (words[words.length - 1] || '');
-  const completedWordsCount = query.endsWith(' ') ? words.length : Math.max(0, words.length - 1);
 
   useEffect(() => {
     // Detect new word start
@@ -92,13 +91,7 @@ const TypingContributionGrid = ({ query }: { query: string }) => {
           />
         ))}
       </div>
-      {(words.length > 0 || currentWord.length > 0) && (
-        <div className="flex flex-col items-center gap-1 mt-2">
-          <p className="text-[10px] uppercase tracking-widest text-[#999] font-bold">
-            {words.length} {words.length === 1 ? 'word' : 'words'} localized in grid
-          </p>
-        </div>
-      )}
+      {/* Contribution grid blocks */}
     </div>
   );
 };

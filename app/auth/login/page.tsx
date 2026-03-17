@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowUp, Plus, Eye, EyeOff } from 'lucide-react';
+import { ArrowUp, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/i18n';
 
