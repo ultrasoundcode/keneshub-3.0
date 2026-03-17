@@ -13,11 +13,7 @@ export default function Footer() {
     {
       title: 'Компания',
       links: ['О нас', 'Контакты', 'Безопасность', 'Условия использования', 'Политика конфиденциальности']
-    },
-    {
-      title: 'Сообщество',
-      links: ['Github (ultrasoundcode)']
-    },
+    }
   ];
 
   return (
@@ -26,6 +22,7 @@ export default function Footer() {
         
         {/* Link Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-8 mb-20">
+          {/* 1. Компания */}
           {sections.map((section) => (
             <div key={section.title}>
               <h3 className="text-[14.5px] font-bold text-white mb-6 tracking-tight">{t(section.title)}</h3>
@@ -33,8 +30,7 @@ export default function Footer() {
                 {section.links.map((link) => (
                   <li key={link}>
                     <Link 
-                      href={link === 'Github (ultrasoundcode)' ? 'https://github.com/ultrasoundcode' : '#'} 
-                      target={link === 'Github (ultrasoundcode)' ? '_blank' : undefined}
+                      href="#" 
                       className="text-[13.5px] text-[#777] hover:text-white transition-colors"
                     >
                       {t(link)}
@@ -45,7 +41,7 @@ export default function Footer() {
             </div>
           ))}
 
-          {/* Social Media Column */}
+          {/* 2. Социальные сети */}
           <div className="col-span-1">
             <h3 className="text-[14.5px] font-bold text-white mb-6 tracking-tight">{t('Социальные сети')}</h3>
             <div className="flex items-center gap-5">
@@ -56,7 +52,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Contact Us Column */}
+          {/* 3. Связаться с нами */}
           <div className="col-span-1">
             <h3 className="text-[14.5px] font-bold text-white mb-6 tracking-tight">{t('Связаться с нами')}</h3>
             <div className="flex flex-wrap items-center gap-5 mb-8">
@@ -98,6 +94,23 @@ export default function Footer() {
               )}
             </div>
           </div>
+
+          {/* 4. the code */}
+          <div className="col-span-1">
+            <h3 className="text-[14.5px] font-bold text-white mb-6 tracking-tight">{t('the code')}</h3>
+            <ul className="space-y-3.5">
+              <li>
+                <Link 
+                  href="https://github.com/ultrasoundcode" 
+                  target="_blank"
+                  className="text-[13.5px] text-[#777] hover:text-white transition-colors"
+                >
+                  Github (ultrasoundcode)
+                </Link>
+              </li>
+            </ul>
+          </div>
+
         </div>
 
         <div className="pt-10 border-t border-zinc-800/80 mb-10"></div>
