@@ -47,9 +47,9 @@ const TypingContributionGrid = ({ query }: { query: string }) => {
 
   const getWeight = (wordLen: number, timeMs: number) => {
     // Slower = Darker: More time means more weight
-    const timeWeight = Math.min(timeMs / 3000, 0.5); // Max weight reaches at 3 seconds
+    const timeWeight = Math.min(timeMs / 4000, 0.4); // Max time weight reaches at 4 seconds
     // Longer = Darker: More characters mean more weight
-    const lenWeight = Math.min(wordLen / 12, 0.5); // Max weight reaches at 12 chars
+    const lenWeight = Math.min(wordLen / 15, 0.6); // Max length weight reaches at 15 chars
     return timeWeight + lenWeight;
   };
 
@@ -64,13 +64,15 @@ const TypingContributionGrid = ({ query }: { query: string }) => {
       const timeInProgress = currentWordStart ? Date.now() - currentWordStart : 0;
       weight = getWeight(currentWord.length, timeInProgress);
     } else {
-      return '#f4f4f5'; // Empty
+      return '#f8f8f8'; // Very light empty state
     }
 
-    if (weight > 0.8) return '#000000';
-    if (weight > 0.5) return '#52525b';
-    if (weight > 0.25) return '#a1a1aa';
-    return '#d4d4d8';
+    // GitHub-like shades of grey/black with more contrast
+    if (weight > 0.85) return '#000000'; // Level 4: Black
+    if (weight > 0.55) return '#52525b'; // Level 3: Dark Grey
+    if (weight > 0.25) return '#a1a1aa'; // Level 2: Medium Grey
+    if (weight > 0.05) return '#e4e4e7'; // Level 1: Very Light Grey
+    return '#f4f4f5';                      // Level 0: Default
   };
 
   return (
