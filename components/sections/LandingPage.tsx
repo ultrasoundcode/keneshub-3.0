@@ -4,36 +4,76 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ArrowUp, Layout, Globe, Code, PenTool, MoreHorizontal, Search, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import ArchitectureSection from './ArchitectureSection';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n';
 
-// Mini GitHub-style grid component
+// Enhanced GitHub-style grid component with speed-based intensity
 const TypingContributionGrid = ({ length }: { length: number }) => {
-  // We'll show up to 100 blocks, 4 rows of 25
-  const totalBlocks = 100;
-  const blocks = Array.from({ length: totalBlocks });
+  const [intensity, setIntensity] = useState(0);
+  const [lastLength, setLastLength] = useState(0);
+  const blocks = Array.from({ length: 100 });
+
+  // Update intensity based on typing activity
+  useEffect(() => {
+    if (length > lastLength) {
+      // User typed something
+      setIntensity(prev => Math.min(prev + 0.15, 1));
+      setLastLength(length);
+    } else if (length < lastLength) {
+      // User deleted something
+      setLastLength(length);
+    }
+
+    // Decay intensity over time
+    const decay = setInterval(() => {
+      setIntensity(prev => Math.max(prev - 0.05, 0));
+    }, 100);
+
+    return () => clearInterval(decay);
+  }, [length, lastLength]);
+
+  // Map intensity to GitHub-like colors (monochrome scale)
+  const getColor = (i: number) => {
+    if (i >= length) return '#f4f4f5'; // Empty block
+    
+    // GitHub levels mapped to intensity
+    if (intensity > 0.8) return '#000000'; // Level 4
+    if (intensity > 0.5) return '#52525b'; // Level 3
+    if (intensity > 0.2) return '#a1a1aa'; // Level 2
+    return '#d4d4d8';                      // Level 1
+  };
 
   return (
-    <div className="flex flex-col gap-1 mt-4 mb-2 animate-pulse-subtle">
+    <div className="flex flex-col gap-1 mt-4 mb-2">
       <div className="flex flex-wrap gap-1 justify-center max-w-[500px] mx-auto">
         {blocks.map((_, i) => (
           <motion.div
             key={i}
             initial={false}
             animate={{ 
-              backgroundColor: i < length ? '#000000' : '#f4f4f5',
-              scale: i < length ? [1, 1.1, 1] : 1,
+              backgroundColor: getColor(i),
+              scale: i < length ? [1, 1.05, 1] : 1,
               opacity: i < length ? 1 : 0.4
             }}
-            transition={{ duration: 0.2 }}
-            className="w-2.5 h-2.5 rounded-[2px]"
+            transition={{ duration: 0.3 }}
+            className="w-2.5 h-2.5 rounded-[2px] transition-colors duration-500"
           />
         ))}
       </div>
       {length > 0 && (
-        <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mt-2">
-          {length} {length === 1 ? 'character' : 'characters'} contribution
-        </p>
+        <div className="flex flex-col items-center gap-1 mt-2">
+          <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">
+            {length} {length === 1 ? 'character' : 'characters'} contribution
+          </p>
+          <div className="flex items-center gap-1 ml-auto mr-auto px-4">
+             <span className="text-[9px] text-zinc-400 uppercase">Less</span>
+             <div className="w-2 h-2 rounded-[1px] bg-[#d4d4d8]" />
+             <div className="w-2 h-2 rounded-[1px] bg-[#a1a1aa]" />
+             <div className="w-2 h-2 rounded-[1px] bg-[#52525b]" />
+             <div className="w-2 h-2 rounded-[1px] bg-[#000000]" />
+             <span className="text-[9px] text-zinc-400 uppercase">More</span>
+          </div>
+        </div>
       )}
     </div>
   );
