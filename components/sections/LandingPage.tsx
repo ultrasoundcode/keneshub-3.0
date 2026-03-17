@@ -7,40 +7,70 @@ import ArchitectureSection from './ArchitectureSection';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n';
 
-// Enhanced GitHub-style grid component with speed-based intensity
-const TypingContributionGrid = ({ length }: { length: number }) => {
-  const [intensity, setIntensity] = useState(0);
-  const [lastLength, setLastLength] = useState(0);
+// Refined Word-Based GitHub-style grid component
+const TypingContributionGrid = ({ query }: { query: string }) => {
+  const [wordData, setWordData] = useState<{ length: number; time: number }[]>([]);
+  const [currentWordStart, setCurrentWordStart] = useState<number | null>(null);
+  const [lastQuery, setLastQuery] = useState('');
+  
   const blocks = Array.from({ length: 100 });
+  const words = query.split(/\s+/).filter(w => w.length > 0);
+  const currentWord = query.endsWith(' ') ? '' : (words[words.length - 1] || '');
+  const completedWordsCount = query.endsWith(' ') ? words.length : Math.max(0, words.length - 1);
 
-  // Update intensity based on typing activity
   useEffect(() => {
-    if (length > lastLength) {
-      // User typed something
-      setIntensity(prev => Math.min(prev + 0.15, 1));
-      setLastLength(length);
-    } else if (length < lastLength) {
-      // User deleted something
-      setLastLength(length);
+    // Detect new word start
+    if (query.length > 0 && !currentWordStart) {
+      setCurrentWordStart(Date.now());
     }
 
-    // Decay intensity over time
-    const decay = setInterval(() => {
-      setIntensity(prev => Math.max(prev - 0.05, 0));
-    }, 100);
+    // Detect word completion (space pressed)
+    if (query.endsWith(' ') && lastQuery && !lastQuery.endsWith(' ')) {
+      const timeSpent = currentWordStart ? Date.now() - currentWordStart : 500;
+      const lastWord = lastQuery.trim().split(/\s+/).pop() || '';
+      
+      setWordData(prev => [
+        ...prev, 
+        { length: lastWord.length, time: timeSpent }
+      ]);
+      setCurrentWordStart(null);
+    }
 
-    return () => clearInterval(decay);
-  }, [length, lastLength]);
+    // Reset if cleared
+    if (query.length === 0) {
+      setWordData([]);
+      setCurrentWordStart(null);
+    }
 
-  // Map intensity to GitHub-like colors (monochrome scale)
-  const getColor = (i: number) => {
-    if (i >= length) return '#f4f4f5'; // Empty block
-    
-    // GitHub levels mapped to intensity
-    if (intensity > 0.8) return '#000000'; // Level 4
-    if (intensity > 0.5) return '#52525b'; // Level 3
-    if (intensity > 0.2) return '#a1a1aa'; // Level 2
-    return '#d4d4d8';                      // Level 1
+    setLastQuery(query);
+  }, [query, lastQuery, currentWordStart]);
+
+  const getWeight = (wordLen: number, timeMs: number) => {
+    // Slower = Darker: More time means more weight
+    const timeWeight = Math.min(timeMs / 3000, 0.5); // Max weight reaches at 3 seconds
+    // Longer = Darker: More characters mean more weight
+    const lenWeight = Math.min(wordLen / 12, 0.5); // Max weight reaches at 12 chars
+    return timeWeight + lenWeight;
+  };
+
+  const getColor = (index: number) => {
+    let weight = 0;
+
+    if (index < wordData.length) {
+      // Completed words
+      weight = getWeight(wordData[index].length, wordData[index].time);
+    } else if (index === wordData.length && currentWord.length > 0) {
+      // Current word (in progress)
+      const timeInProgress = currentWordStart ? Date.now() - currentWordStart : 0;
+      weight = getWeight(currentWord.length, timeInProgress);
+    } else {
+      return '#f4f4f5'; // Empty
+    }
+
+    if (weight > 0.8) return '#000000';
+    if (weight > 0.5) return '#52525b';
+    if (weight > 0.25) return '#a1a1aa';
+    return '#d4d4d8';
   };
 
   return (
@@ -52,27 +82,19 @@ const TypingContributionGrid = ({ length }: { length: number }) => {
             initial={false}
             animate={{ 
               backgroundColor: getColor(i),
-              scale: i < length ? [1, 1.05, 1] : 1,
-              opacity: i < length ? 1 : 0.4
+              scale: (i === wordData.length && currentWord.length > 0) ? [1, 1.1, 1] : 1,
+              opacity: (i <= wordData.length) ? 1 : 0.4
             }}
-            transition={{ duration: 0.3 }}
-            className="w-2.5 h-2.5 rounded-[2px] transition-colors duration-500"
+            transition={{ duration: 0.2 }}
+            className={`w-2.5 h-2.5 rounded-[2px] ${(i === wordData.length && currentWord.length > 0) ? 'animate-pulse' : ''}`}
           />
         ))}
       </div>
-      {length > 0 && (
+      {(words.length > 0 || currentWord.length > 0) && (
         <div className="flex flex-col items-center gap-1 mt-2">
-          <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">
-            {length} {length === 1 ? 'character' : 'characters'} contribution
+          <p className="text-[10px] uppercase tracking-widest text-[#999] font-bold">
+            {words.length} {words.length === 1 ? 'word' : 'words'} localized in grid
           </p>
-          <div className="flex items-center gap-1 ml-auto mr-auto px-4">
-             <span className="text-[9px] text-zinc-400 uppercase">Less</span>
-             <div className="w-2 h-2 rounded-[1px] bg-[#d4d4d8]" />
-             <div className="w-2 h-2 rounded-[1px] bg-[#a1a1aa]" />
-             <div className="w-2 h-2 rounded-[1px] bg-[#52525b]" />
-             <div className="w-2 h-2 rounded-[1px] bg-[#000000]" />
-             <span className="text-[9px] text-zinc-400 uppercase">More</span>
-          </div>
         </div>
       )}
     </div>
@@ -173,7 +195,7 @@ export default function LandingPage() {
               </div>
               
               {/* Contribution Grid Animation */}
-              <TypingContributionGrid length={query.length} />
+              <TypingContributionGrid query={query} />
 
               {/* AI Response Container */}
               <AnimatePresence>
