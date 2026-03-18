@@ -20,11 +20,11 @@ const menuItems = [
   { id: 'ai', label: 'AI Консультант', icon: Sparkles, href: '/dashboard/ai' },
   { id: 'negotiations', label: 'Переговоры', icon: MessageSquare, href: '/dashboard/negotiations' },
   { id: 'documents', label: 'Документы', icon: FileText, href: '/dashboard/documents' },
-  { id: 'court', label: 'Правовая помощь', icon: Scale, href: '/legal' },
+  { id: 'court', label: 'Правовая помощь', icon: Scale, href: '/dashboard/legal' },
   { id: 'settings', label: 'Настройки', icon: Settings, href: '/dashboard/settings' },
 ];
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ onClose }: { onClose?: () => void }) {
   const { t } = useLanguage();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -42,10 +42,10 @@ export default function DashboardSidebar() {
   const displayUserRole = mounted && userRole ? userRole : 'Заёмщик';
 
   return (
-    <aside className="w-[260px] h-screen bg-white border-r border-[#e8e8e8] flex flex-col flex-shrink-0">
+    <aside className="w-[260px] h-full bg-white border-r border-[#e8e8e8] flex flex-col flex-shrink-0">
       {/* Sidebar Header */}
       <div className="px-8 py-10">
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" onClick={onClose} className="flex items-center gap-2 group">
           <div className="w-5 h-5 flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
               <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="black"/>
@@ -68,6 +68,7 @@ export default function DashboardSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={`flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 group ${
                 isActive 
                   ? 'bg-zinc-100 text-black' 

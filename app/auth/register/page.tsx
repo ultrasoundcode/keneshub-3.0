@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { User, Building2, Briefcase, Scale, Users, Check, ArrowUp } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -100,43 +100,89 @@ function RegisterForm() {
           <h1 className="font-serif text-[40px] text-black leading-tight tracking-tight">
             {t('Создать аккаунт')}
           </h1>
-          <p className="text-[14px] text-zinc-400 font-medium mt-2">
-            {t('Выберите вашу роль в экосистеме')}
-          </p>
+          <motion.p 
+            animate={{ opacity: selectedRole ? 0.5 : 1 }}
+            className="text-[14px] text-zinc-400 font-medium mt-2"
+          >
+            {selectedRole ? t('Ваша роль выбрана') : t('Выберите вашу роль в экосистеме')}
+          </motion.p>
         </div>
 
         {/* Role selection - Minimalist List */}
         <div className="grid grid-cols-1 gap-3 mb-12">
-          {roles.map((role) => {
-            const Icon = role.icon;
-            const isSelected = selectedRole === role.id;
-            return (
-              <button
-                key={role.id}
-                type="button"
-                onClick={() => setSelectedRole(role.id)}
-                className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
-                  isSelected 
-                    ? 'border-black bg-zinc-50' 
-                    : 'border-zinc-100 hover:border-zinc-300 bg-white'
-                }`}
+          <AnimatePresence mode="wait">
+            {!selectedRole ? (
+              <motion.div
+                key="role-list"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                className="grid grid-cols-1 gap-3"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSelected ? 'bg-black text-white' : 'bg-zinc-50 text-zinc-400'}`}>
-                    <Icon size={18} strokeWidth={isSelected ? 2 : 1.5} />
+                {roles.map((role) => {
+                  const Icon = role.icon;
+                  return (
+                    <button
+                      key={role.id}
+                      type="button"
+                      onClick={() => setSelectedRole(role.id)}
+                      className="flex items-center justify-between p-4 rounded-xl border border-zinc-100 hover:border-zinc-300 bg-white transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-zinc-50 text-zinc-400">
+                          <Icon size={18} strokeWidth={1.5} />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-[15px] font-bold text-zinc-500">{t(role.label)}</p>
+                          <p className="text-[12px] text-zinc-400">{t(role.desc)}</p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="selected-role"
+                initial={{ opacity: 0, scale: 0.98, y: -5 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98, y: -5 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="relative"
+              >
+                <div className="flex items-center justify-between p-4 rounded-xl border border-black bg-zinc-50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-black text-white">
+                      {selected && <selected.icon size={18} strokeWidth={2} />}
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[15px] font-bold text-black">{t(selected?.label || '')}</p>
+                      <p className="text-[12px] text-zinc-400">{t(selected?.desc || '')}</p>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <p className={`text-[15px] font-bold ${isSelected ? 'text-black' : 'text-zinc-500'}`}>{t(role.label)}</p>
-                    <p className="text-[12px] text-zinc-400">{t(role.desc)}</p>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('')}
+                    className="text-[11px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
+                  >
+                    {t('Изменить')}
+                  </button>
                 </div>
-                {isSelected && <Check size={18} className="text-black" />}
-              </button>
-            );
-          })}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <AnimatePresence>
+          {selectedRole && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+            >
+              <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 ml-1">
@@ -205,8 +251,11 @@ function RegisterForm() {
                 {t('Инициализировать аккаунт')} <ArrowUp className="rotate-90" size={16} />
               </span>
             )}
-          </button>
-        </form>
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
         <p className="text-center text-[13px] mt-10 text-zinc-400 font-medium">
           {t('Уже есть аккаунт?')} {' '}
