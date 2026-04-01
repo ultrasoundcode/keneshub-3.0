@@ -14,12 +14,13 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useLanguage } from '@/lib/i18n';
+import { Suspense } from 'react';
 
 const initialMessages = [
   { role: 'assistant', content: 'Здравствуйте! Я ваш AI-ассистент KenesHub. Опишите вашу ситуацию, и я постараюсь помочь.' }
 ];
 
-export default function AIAssistantPage() {
+function AIAssistantChat() {
   const { language } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -206,5 +207,13 @@ export default function AIAssistantPage() {
       </div>
 
     </div>
+  );
+}
+
+export default function AIAssistantPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-zinc-400">Инициализация ИИ...</div>}>
+      <AIAssistantChat />
+    </Suspense>
   );
 }
