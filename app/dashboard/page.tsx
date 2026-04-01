@@ -16,13 +16,20 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n';
+import { useRouter } from 'next/navigation';
+import { TypingContributionGrid } from '@/components/ui/TypingContributionGrid';
 
 export default function Dashboard() {
   const { t } = useLanguage();
+  const router = useRouter();
   const [data, setData] = useState<{ user: any, debts: any[] } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
+    setUserName(localStorage.getItem('userName') || '');
+    
     fetch('/api/debts')
       .then(res => res.json())
       .then(setData)
@@ -58,7 +65,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="font-serif text-[36px] md:text-[56px] text-black leading-tight mb-4 tracking-tighter"
         >
-          {t('Чем я могу помочь вам сегодня')}{data?.user?.name ? `, ${data.user.name.split(' ')[0]}` : ''}?
+          {t('Чем я могу помочь вам сегодня')}{userName ? `, ${userName.split(' ')[0]}` : ''}?
         </motion.h1>
         <p className="text-[15px] md:text-[16px] text-zinc-400 font-medium">
           {t('У вас')} <span className="text-black font-bold">{data?.debts?.length || 0} {t('активных дела')}</span>, {t('требующих внимания')}.
@@ -74,12 +81,33 @@ export default function Dashboard() {
             </div>
             <input 
               type="text" 
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && aiPrompt.trim()) {
+                  router.push('/dashboard/ai?prompt=' + encodeURIComponent(aiPrompt.trim()));
+                }
+              }}
               placeholder="Опишите вашу ситуацию с задолженностью..."
               className="flex-1 bg-transparent border-none outline-none text-[20px] text-black placeholder:text-[#ccc] py-2"
             />
-            <button className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-black/10">
-              <Plus size={28} />
+            <button 
+              onClick={() => {
+                if (aiPrompt.trim()) {
+                  router.push('/dashboard/ai?prompt=' + encodeURIComponent(aiPrompt.trim()));
+                }
+              }}
+              disabled={!aiPrompt.trim()}
+              className="btn-keneshub btn-black rounded-[14px] px-5 sm:px-8 py-3.5 sm:py-4 justify-center disabled:opacity-50 whitespace-nowrap shrink-0 sm:min-w-[170px]"
+            >
+              <span className="sm:hidden text-[13px] tracking-wide">{t('Анализ')}</span>
+              <span className="hidden sm:inline">{t('Анализировать')}</span>
             </button>
+          </div>
+          
+          {/* GitHub Grid Animation */}
+          <div className="mt-6">
+            <TypingContributionGrid query={aiPrompt} />
           </div>
         </div>
       </section>
@@ -129,29 +157,11 @@ export default function Dashboard() {
             <Link href="/dashboard/documents" className="text-[13px] font-bold text-black border-b border-black pb-0.5">Все</Link>
           </div>
           <div className="space-y-8">
-            {[
-              { name: 'Заявление о реструктуризации.pdf', date: 'Сегодня, 14:20', icon: FileText },
-              { name: 'Уведомление от банка.pdf', date: 'Вчера, 09:15', icon: FileText },
-              { name: 'Проект КП (Draft v2).pdf', date: '9 мар 2026', icon: Sparkles },
-            ].map((doc, i) => (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-start gap-4"
-              >
-                <div className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center flex-shrink-0">
-                  <doc.icon size={18} className="text-zinc-600" strokeWidth={1.5} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-semibold text-black leading-tight border-b border-transparent hover:border-black transition-all inline-block cursor-pointer">
-                    {doc.name}
-                  </p>
-                  <p className="text-[12px] text-zinc-400 mt-1">{doc.date}</p>
-                </div>
-              </motion.div>
-            ))}
+              <div className="p-8 text-center rounded-[20px] border border-dashed border-zinc-200 bg-[#fafafa]">
+                 <FileText size={24} className="mx-auto text-zinc-300 mb-3" />
+                 <p className="text-[14px] font-medium text-zinc-500">Нет последних документов</p>
+                 <p className="text-[12px] text-zinc-400 mt-1">Здесь появятся ваши сгенерированные или загруженные файлы.</p>
+              </div>
           </div>
         </div>
 

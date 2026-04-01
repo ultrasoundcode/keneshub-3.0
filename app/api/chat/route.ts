@@ -5,11 +5,15 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, language } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
     }
+
+    const languageInstruction = language === 'kk' 
+      ? 'ОТВЕЧАЙ СТРОГО НА КАЗАХСКОМ ЯЗЫКЕ. МАҢЫЗДЫ: ТЕК ҚАЗАҚША ЖАУАП БЕР.' 
+      : 'Отвечай строго на русском языке.';
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
@@ -30,7 +34,7 @@ export async function POST(req: Request) {
 - Если у пользователя есть документы или данные о долге, опирайтесь на них.
 - Предлагайте конкретные шаги (например: "Напишите заявление в банк", "Соберите справки о доходах", "Обратитесь к медиатору").
 
-Отвечайте на языке пользователя (русский или казахский).`
+${languageInstruction}`
     });
 
     // For maximum compatibility with gemini-2.5-flash, 

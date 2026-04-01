@@ -7,104 +7,21 @@ import ArchitectureSection from './ArchitectureSection';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n';
 
-// Refined Word-Based GitHub-style grid component
-const TypingContributionGrid = ({ query }: { query: string }) => {
-  const [wordData, setWordData] = useState<{ length: number; time: number }[]>([]);
-  const [currentWordStart, setCurrentWordStart] = useState<number | null>(null);
-  const [lastQuery, setLastQuery] = useState('');
-  
-  const blocks = Array.from({ length: 100 });
-  const words = query.split(/\s+/).filter(w => w.length > 0);
-  const currentWord = query.endsWith(' ') ? '' : (words[words.length - 1] || '');
-
-  useEffect(() => {
-    // Detect new word start
-    if (query.length > 0 && !currentWordStart) {
-      setCurrentWordStart(Date.now());
-    }
-
-    // Detect word completion (space pressed)
-    if (query.endsWith(' ') && lastQuery && !lastQuery.endsWith(' ')) {
-      const timeSpent = currentWordStart ? Date.now() - currentWordStart : 500;
-      const lastWord = lastQuery.trim().split(/\s+/).pop() || '';
-      
-      setWordData(prev => [
-        ...prev, 
-        { length: lastWord.length, time: timeSpent }
-      ]);
-      setCurrentWordStart(null);
-    }
-
-    // Reset if cleared
-    if (query.length === 0) {
-      setWordData([]);
-      setCurrentWordStart(null);
-    }
-
-    setLastQuery(query);
-  }, [query, lastQuery, currentWordStart]);
-
-  const getWeight = (wordLen: number, timeMs: number) => {
-    // Slower = Darker: More time means more weight
-    const timeWeight = Math.min(timeMs / 4000, 0.4); // Max time weight reaches at 4 seconds
-    // Longer = Darker: More characters mean more weight
-    const lenWeight = Math.min(wordLen / 15, 0.6); // Max length weight reaches at 15 chars
-    return timeWeight + lenWeight;
-  };
-
-  const getColor = (index: number) => {
-    let weight = 0;
-
-    if (index < wordData.length) {
-      // Completed words
-      weight = getWeight(wordData[index].length, wordData[index].time);
-    } else if (index === wordData.length && currentWord.length > 0) {
-      // Current word (in progress)
-      const timeInProgress = currentWordStart ? Date.now() - currentWordStart : 0;
-      weight = getWeight(currentWord.length, timeInProgress);
-    } else {
-      return '#f8f8f8'; // Very light empty state
-    }
-
-    // GitHub-like shades of grey/black with more contrast
-    if (weight > 0.85) return '#000000'; // Level 4: Black
-    if (weight > 0.55) return '#52525b'; // Level 3: Dark Grey
-    if (weight > 0.25) return '#a1a1aa'; // Level 2: Medium Grey
-    if (weight > 0.05) return '#e4e4e7'; // Level 1: Very Light Grey
-    return '#f4f4f5';                      // Level 0: Default
-  };
-
-  return (
-    <div className="flex flex-col gap-1 mt-4 mb-2">
-      <div className="flex flex-wrap gap-1 justify-center max-w-[500px] mx-auto">
-        {blocks.map((_, i) => (
-          <motion.div
-            key={i}
-            initial={false}
-            animate={{ 
-              backgroundColor: getColor(i),
-              scale: (i === wordData.length && currentWord.length > 0) ? [1, 1.1, 1] : 1,
-              opacity: (i <= wordData.length) ? 1 : 0.4
-            }}
-            transition={{ duration: 0.2 }}
-            className={`w-2.5 h-2.5 rounded-[2px] ${(i === wordData.length && currentWord.length > 0) ? 'animate-pulse' : ''}`}
-          />
-        ))}
-      </div>
-      {/* Contribution grid blocks */}
-    </div>
-  );
-};
+import { TypingContributionGrid } from '@/components/ui/TypingContributionGrid';
 
 export default function LandingPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const handleAnalyze = async () => {
-    if (!query.trim()) return;
+  const handleAnalyze = async (overrideQuery?: string) => {
+    const activeQuery = overrideQuery || query;
+    if (!activeQuery.trim()) return;
+    
+    // Automatically fill the input if user clicked a suggestion tag
+    if (overrideQuery) setQuery(overrideQuery);
     
     setIsLoading(true);
     setResponse('');
@@ -114,7 +31,7 @@ export default function LandingPage() {
       const res = await fetch('/api/analyze-situation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ situation: query }),
+        body: JSON.stringify({ situation: activeQuery, language }),
       });
       
       const data = await res.json();
@@ -133,6 +50,15 @@ export default function LandingPage() {
       setIsLoading(false);
     }
   };
+  
+  const [mounted, setMounted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setIsLoggedIn(!!localStorage.getItem('userName'));
+  }, []);
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden w-full">
       {/* Hero Content */}
@@ -168,7 +94,7 @@ export default function LandingPage() {
                   disabled={isLoading}
                 />
                 <button 
-                  onClick={handleAnalyze}
+                  onClick={() => handleAnalyze()}
                   disabled={isLoading || !query.trim()}
                   className="btn-keneshub btn-black rounded-[14px] px-5 sm:px-8 py-3.5 sm:py-4 justify-center disabled:opacity-50 whitespace-nowrap shrink-0 sm:min-w-[170px]"
                 >
@@ -213,13 +139,30 @@ export default function LandingPage() {
                     </div>
                     
                     {!isError && (
-                      <div className="flex justify-end pt-4 border-t border-zinc-100/50">
-                        <Link 
-                          href="/auth/register"
-                          className="btn-keneshub btn-black py-3 px-8 rounded-xl text-[13px] uppercase tracking-[0.2em] font-bold flex items-center gap-2 hover:scale-105 transition-transform"
-                        >
-                          {t('Регистрация')} <ArrowUp className="rotate-90" size={16} />
-                        </Link>
+                      <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-zinc-100/50">
+                        {mounted && isLoggedIn ? (
+                          <Link 
+                            href={`/dashboard/ai?prompt=${encodeURIComponent(query)}`}
+                            className="btn-keneshub btn-black py-2.5 px-6 rounded-xl text-[12px] uppercase tracking-[0.1em] font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+                          >
+                            {t('Продолжить разговор в кабинете')} <ArrowUp className="rotate-90" size={14} />
+                          </Link>
+                        ) : (
+                          <>
+                            <Link 
+                              href="/auth/login"
+                              className="btn-keneshub bg-zinc-100 text-black py-2.5 px-6 rounded-xl text-[12px] uppercase tracking-[0.1em] font-bold flex items-center gap-2 hover:bg-zinc-200 transition-colors"
+                            >
+                              {t('Войти')}
+                            </Link>
+                            <Link 
+                              href="/auth/register"
+                              className="btn-keneshub btn-black py-2.5 px-6 rounded-xl text-[12px] uppercase tracking-[0.1em] font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+                            >
+                              {t('Регистрация')} <ArrowUp className="rotate-90" size={14} />
+                            </Link>
+                          </>
+                        )}
                       </div>
                     )}
                   </motion.div>
@@ -243,7 +186,9 @@ export default function LandingPage() {
             ].map((item) => (
               <button 
                 key={item.label}
-                className="flex items-center gap-2 px-5 py-[9px] rounded-full border border-[#ececec] bg-white hover:bg-[#fafafa] transition-all text-[14px] font-medium text-[#444]"
+                onClick={() => handleAnalyze(item.label)}
+                disabled={isLoading}
+                className="flex items-center gap-2 px-5 py-[9px] rounded-full border border-[#ececec] bg-white hover:bg-[#fafafa] transition-all text-[14px] font-medium text-[#444] disabled:opacity-50"
               >
                 <item.icon size={16} className="text-[#999]" strokeWidth={1.5} />
                 {item.label}

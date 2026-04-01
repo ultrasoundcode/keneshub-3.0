@@ -35,7 +35,7 @@ const roles = [
     label: 'Юрист',
     desc: 'Правовая поддержка',
     icon: Scale,
-    href: '/legal',
+    href: '/dashboard/legal',
   },
   {
     id: 'ombudsman',

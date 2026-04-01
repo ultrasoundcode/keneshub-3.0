@@ -37,8 +37,8 @@ export default function DashboardSidebar({ onClose }: { onClose?: () => void }) 
     setUserRole(localStorage.getItem('userRole') || '');
   }, []);
 
-  const displayInitial = mounted && userName ? userName[0].toUpperCase() : 'А';
-  const displayUserName = mounted && userName ? userName : 'Алибек Н.';
+  const displayInitial = mounted && userName ? userName[0].toUpperCase() : 'П';
+  const displayUserName = mounted && userName ? userName : 'Пользователь';
   const displayUserRole = mounted && userRole ? userRole : 'Заёмщик';
 
   return (
@@ -98,7 +98,14 @@ export default function DashboardSidebar({ onClose }: { onClose?: () => void }) 
             <p className="text-[12px] text-zinc-400 truncate">{displayUserRole}</p>
           </div>
         </div>
-        <button className="w-full flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-black transition-colors">
+        <button 
+          onClick={() => {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userRole');
+            window.location.href = '/';
+          }}
+          className="w-full flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-black transition-colors"
+        >
           <LogOut size={16} />
           <span className="text-[13px] font-semibold uppercase tracking-wider">{t('Выйти')}</span>
         </button>

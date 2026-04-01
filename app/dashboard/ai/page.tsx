@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { 
   Plus, 
   ArrowUp, 
@@ -12,20 +13,66 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useLanguage } from '@/lib/i18n';
+
 const initialMessages = [
-  { role: 'assistant', content: 'Здравствуйте! Я ваш AI-ассистент KenesHub. Я изучил ваше дело с Kaspi Bank.' },
-  { role: 'assistant', content: 'Основываясь на сумме долга в **₸2,450,000** и ваших документах о доходах, я рекомендую инициировать запрос на **реструктуризацию** согласно 34 статье Закона о банках.' },
+  { role: 'assistant', content: 'Здравствуйте! Я ваш AI-ассистент KenesHub. Опишите вашу ситуацию, и я постараюсь помочь.' }
 ];
 
 export default function AIAssistantPage() {
+  const { language } = useLanguage();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleInitialPrompt = useCallback(async (promptText: string) => {
+    const userMsg = { role: 'user', content: promptText };
+    const newMessages = [userMsg]; // Do not include the default welcome if the user came with a specific prompt
+    
+    setMessages(newMessages);
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages, language }),
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch');
+
+      const data = await response.json();
+      setMessages((prev) => [...prev, { role: 'assistant', content: data.content }]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      setMessages((prev) => [
+        ...prev,
+        { 
+          role: 'assistant', 
+          content: 'Извините, произошла ошибка при соединении с AI. Пожалуйста, попробуйте еще раз.' 
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const prompt = searchParams.get('prompt');
+    if (prompt && !initialized.current) {
+      initialized.current = true;
+      handleInitialPrompt(prompt);
+      router.replace('/dashboard/ai');
+    }
+  }, [searchParams, router, handleInitialPrompt]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
@@ -41,7 +88,7 @@ export default function AIAssistantPage() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, language }),
       });
 
       if (!response.ok) throw new Error('Failed to fetch');
