@@ -61,15 +61,45 @@ function RegisterForm() {
     e.preventDefault();
     if (!selectedRole) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      // Сохраняем в реальную БД
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          role: selectedRole
+        })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Ошибка при регистрации');
+      }
+
+      // Сохраняем в стор для UI (как было раньше)
       if (typeof window !== 'undefined') {
         localStorage.setItem('userName', form.name || 'Пользователь');
         localStorage.setItem('userRole', selected?.label || 'Заёмщик');
         localStorage.setItem('userEmail', form.email || '');
       }
-      router.push(selected?.href || '/dashboard');
-    }, 1200);
+      
+      // Искусственная задержка для плавности анимации
+      setTimeout(() => {
+        setLoading(false);
+        router.push(selected?.href || '/dashboard');
+      }, 500);
+
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка регистрации. Возможно этот email уже используется.');
+      setLoading(false);
+    }
   };
 
   return (
